@@ -1,0 +1,11 @@
+source_directory: /usr/src/php-build/src
+build_directory: /usr/src/php-build/build
+install_directory: /usr/src/php-build/install
+force_rebuild: false
+path:
+- /usr/local/sbin
+- /usr/local/bin
+- /usr/sbin
+- /usr/bin
+- /sbin
+- /bin

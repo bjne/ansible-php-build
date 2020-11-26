@@ -1,0 +1,42 @@
+- name: remove old install/build directory
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+  - "{{ zlib_build_directory }}"
+  - "{{ zlib_install_directory }}"
+
+- name: create required directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+  - "{{ zlib_source_directory }}"
+  - "{{ zlib_build_directory }}"
+  - "{{ zlib_install_directory }}"
+
+- name: download
+  git:
+    repo: https://github.com/cloudflare/zlib
+    depth: 1
+    version: "{{ zlib_version }}"
+    dest: "{{ zlib_source_directory }}"
+
+
+- name: copy source to build directory
+  git:
+    repo: "{{ zlib_source_directory }}"
+    dest: "{{ zlib_build_directory }}"
+
+- name: configure zlib
+  command: >
+    ./configure
+    --prefix={{ zlib_install_directory }}
+    {{ zlib_configure_flags }}
+  args:
+    chdir: "{{ zlib_build_directory }}"
+
+- name: make zlib
+  command: make -j10 install
+  args:
+    chdir: "{{ zlib_build_directory }}"

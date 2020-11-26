@@ -1,0 +1,56 @@
+- name: remove old install/build directory
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+  - "{{ php_build_directory }}"
+  - "{{ php_install_directory }}"
+
+- name: create required directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+  - "{{ php_source_directory }}"
+  - "{{ php_build_directory }}"
+  - "{{ php_install_directory }}"
+
+- name: download php
+  git:
+    repo: https://github.com/php/php-src
+    depth: 1
+    version: "{{ php_version }}"
+    dest: "{{ php_source_directory }}"
+
+- name: check if we need to run autoreconf
+  stat:
+    path: "{{ php_source_directory }}/configure"
+  register: _php_configure
+
+- name: buildconf
+  command: ./buildconf --force
+  args:
+    chdir: "{{ php_source_directory }}"
+  when: not _php_configure.stat.exists
+
+  #- name: ldpath trickery
+  #  set_fact:
+  #    ldflags: "{{ ['-Wl,--start-group'] + ldflags|default([])}}"
+
+- name: configure php
+  command: >
+    {{ php_source_directory }}/configure
+    --prefix={{ php_install_directory }}
+    {{ php_configure_flags }}
+  args:
+    chdir: "{{ php_build_directory }}"
+  environment:
+    LIBS: "-lpthread"
+    LDFLAGS: "-Wl,--start-group {{ ldflags|default([])|join(' ') }}"
+
+#    LDFLAGS: "-L{{ libidn2_install_directory }}/lib -L {{ nghttp2_install_directory }}/lib"
+
+- name: make php
+  command: make -j10 install
+  args:
+    chdir: "{{ php_build_directory }}"

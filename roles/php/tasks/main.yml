@@ -1,0 +1,7 @@
+- name: check if we need to build
+  stat:
+    path: "{{ php_install_directory }}/lib/libphp.a"
+  register: _libphp_a
+
+- include: build.yml
+  when: not _libphp_a.stat.exists or force_rebuild

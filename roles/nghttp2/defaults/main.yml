@@ -1,0 +1,9 @@
+nghttp2_version: v1.41.0
+nghttp2_source_directory: "{{ source_directory }}/nghttp2-{{ nghttp2_version }}"
+nghttp2_build_directory: "{{ build_directory }}/nghttp2-{{ nghttp2_version }}"
+nghttp2_install_directory: "{{ install_directory }}/nghttp2-{{ nghttp2_version }}"
+
+nghttp2_configure_flags: >
+  --enable-static
+  --disable-shared
+  --enable-lib-only

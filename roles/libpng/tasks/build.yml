@@ -1,0 +1,53 @@
+- name: remove old install/build directory
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+  - "{{ libpng_build_directory }}"
+  - "{{ libpng_install_directory }}"
+
+- name: create required directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+  - "{{ libpng_source_directory }}"
+  - "{{ libpng_build_directory }}"
+  - "{{ libpng_install_directory }}"
+
+- name: download
+  git:
+    repo: https://git.code.sf.net/p/libpng/code
+    depth: 1
+    version: "{{ libpng_version }}"
+    dest: "{{ libpng_source_directory }}"
+
+- name: check if we need to run autogen
+  stat:
+    path: "{{ libpng_source_directory }}/configure"
+  register: _libpng_configure
+
+- name: autogen
+  command: ./autogen.sh
+  args:
+    chdir: "{{ libpng_source_directory }}"
+  when: not _libpng_configure.stat.exists
+
+- name: configure libpng
+  command: >
+    {{ libpng_source_directory }}/configure
+    --prefix={{ libpng_install_directory }}
+    {{ libpng_configure_flags }}
+  args:
+    chdir: "{{ libpng_build_directory }}"
+
+- name: make libpng
+  command: make -j10 install
+  args:
+    chdir: "{{ libpng_build_directory }}"
+
+- name: modify libpng-config
+  command: >
+    sed -i 's/^all_libs=/libs=/'
+    {{ libpng_install_directory }}/bin/libpng-config
+    {{ libpng_install_directory }}/bin/libpng16-config

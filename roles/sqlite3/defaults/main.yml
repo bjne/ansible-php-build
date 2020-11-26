@@ -1,0 +1,10 @@
+sqlite3_version: version-3.33.0
+sqlite3_source_directory: "{{ source_directory }}/sqlite3-{{ sqlite3_version }}"
+sqlite3_build_directory: "{{ build_directory }}/sqlite3-{{ sqlite3_version }}"
+sqlite3_install_directory: "{{ install_directory }}/sqlite3-{{ sqlite3_version }}"
+
+sqlite3_configure_flags: >
+  --enable-static
+  --disable-shared
+  --disable-tcl
+  --disable-readline

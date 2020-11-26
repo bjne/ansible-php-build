@@ -1,0 +1,13 @@
+freetype2_version: VER-2-10-4
+freetype2_source_directory: "{{ source_directory }}/freetype2-{{ freetype2_version }}"
+freetype2_build_directory: "{{ build_directory }}/freetype2-{{ freetype2_version }}"
+freetype2_install_directory: "{{ install_directory }}/freetype2-{{ freetype2_version }}"
+
+freetype2_configure_flags: >
+  --enable-static
+  --disable-shared
+  --with-png
+  --with-zlib
+  --with-bzip2=no
+  --with-harfbuzz=no
+  --with-brotli=no

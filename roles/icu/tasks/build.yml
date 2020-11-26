@@ -1,0 +1,49 @@
+#- name: install dependencies
+#  apt:
+#    pkg: clang-10
+
+- name: remove old install/build directory
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+  - "{{ icu_build_directory }}"
+  - "{{ icu_install_directory }}"
+
+- name: create required directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+  - "{{ icu_source_directory }}"
+  - "{{ icu_build_directory }}"
+  - "{{ icu_install_directory }}"
+
+- name: download
+  git:
+    repo: https://github.com/unicode-org/icu
+    depth: 1
+    version: "{{ icu_version }}"
+    dest: "{{ icu_source_directory }}"
+
+- name: configure icu
+  command: >
+    {{ icu_source_directory }}/icu4c/source/configure
+    --prefix={{ icu_install_directory }}
+    {{ icu_configure_flags }}
+  args:
+    chdir: "{{ icu_build_directory }}"
+  environment:
+    CXX: g++
+    CC: gcc
+    CXXFLAGS: -std=c++11
+
+- name: make icu
+  command: make -j10 install
+  args:
+    chdir: "{{ icu_build_directory }}"
+
+- name: remove dynamic libraries
+  shell: rm *.so*
+  args:
+    chdir: "{{ icu_install_directory }}/lib"

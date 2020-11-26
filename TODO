@@ -1,0 +1,5 @@
+libcurl:
+- extensions/protocols
+
+openssl:
+  add -lz -lpthread -ldl to Libs?

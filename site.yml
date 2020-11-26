@@ -1,0 +1,12 @@
+- hosts: localhost
+  gather_facts: false
+  vars:
+#    php_version: php-7.4.12
+    zlib: cloudflare-zlib
+  environment:
+    PKG_CONFIG_PATH: "{{ pkg_config_path|default([])|join(':') }}"
+    PATH: "{{ path|default([])|join(':') }}"
+    LDFLAGS: "{{ ldflags|default([])|join(' ') }}"
+    CFLAGS: "{{ cflags|default([])|join(' ') }}"
+  roles:
+  - php

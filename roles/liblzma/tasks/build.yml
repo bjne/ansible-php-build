@@ -1,0 +1,52 @@
+- name: install dependencies
+  apt:
+    pkg: po4a
+    state: present
+
+- name: remove old install/build directory
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+  - "{{ liblzma_build_directory }}"
+  - "{{ liblzma_install_directory }}"
+
+- name: create required directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+  - "{{ liblzma_source_directory }}"
+  - "{{ liblzma_build_directory }}"
+  - "{{ liblzma_install_directory }}"
+
+- name: download
+  git:
+    repo: https://git.tukaani.org/xz.git
+    version: "{{ liblzma_version }}"
+    dest: "{{ liblzma_source_directory }}"
+    force: true
+
+- name: check if we need to run autogen
+  stat:
+    path: "{{ liblzma_source_directory }}/configure"
+  register: _liblzma_configure
+
+- name: autogen
+  command: ./autogen.sh
+  args:
+    chdir: "{{ liblzma_source_directory }}"
+  when: not _liblzma_configure.stat.exists
+
+- name: configure liblzma
+  command: >
+    {{ liblzma_source_directory }}/configure
+    --prefix={{ liblzma_install_directory }}
+    {{ liblzma_configure_flags }}
+  args:
+    chdir: "{{ liblzma_build_directory }}"
+
+- name: make liblzma
+  command: make -j10 install
+  args:
+    chdir: "{{ liblzma_build_directory }}"

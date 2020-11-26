@@ -1,0 +1,11 @@
+- name: check if we need to build
+  stat:
+    path: "{{ libxslt_install_directory }}/lib/libxslt.a"
+  register: _libxslt_a
+
+- include: build.yml
+  when: not _libxslt_a.stat.exists or force_rebuild
+
+- name: append to PKG_CONFIG_PATH
+  set_fact:
+    pkg_config_path: "{{ pkg_config_path|default([]) + [libxslt_install_directory + '/lib/pkgconfig'] }}"

@@ -1,0 +1,17 @@
+icu_version: release-68-1
+#icu_version: release-65-1
+icu_source_directory: "{{ source_directory }}/icu-{{ icu_version }}"
+icu_build_directory: "{{ build_directory }}/icu-{{ icu_version }}"
+icu_install_directory: "{{ install_directory }}/icu-{{ icu_version }}"
+
+icu_configure_flags: >
+  --enable-static
+  --enable-release
+  --enable-icuio
+  --disable-weak-threads
+  --disable-tests
+  --disable-samples
+  --disable-layoutex
+  --disable-plugins
+  --disable-extras
+  --with-data-packaging=static

@@ -1,0 +1,16 @@
+libwebp_version: v1.1.0
+libwebp_source_directory: "{{ source_directory }}/libwebp-{{ libwebp_version }}"
+libwebp_build_directory: "{{ build_directory }}/libwebp-{{ libwebp_version }}"
+libwebp_install_directory: "{{ install_directory }}/libwebp-{{ libwebp_version }}"
+
+libwebp_configure_flags: >
+  --enable-static
+  --disable-shared
+  --disable-threading
+  --disable-gl
+  --disable-sdl
+  --enable-png
+  --enable-jpeg
+  --disable-tiff
+  --disable-gif
+  --disable-wic

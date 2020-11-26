@@ -1,0 +1,16 @@
+dependencies:
+  - role: openssl
+  - role: curl
+  - role: libwebp
+  - role: libxml2
+  - role: libxslt
+  - role: libjpeg-turbo
+  - role: libpng
+  - role: "{{ zlib }}"
+  - role: freetype2
+  - role: sqlite3
+  - role: oniguruma
+  - role: tidy-html5
+  - role: libzip
+  - role: libbz2
+  - role: icu

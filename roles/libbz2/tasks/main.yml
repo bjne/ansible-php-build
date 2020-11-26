@@ -1,0 +1,12 @@
+- name: check if we need to build
+  stat:
+    path: "{{ libbz2_install_directory }}/lib/libbz2.a"
+  register: _libbz2_a
+
+- include: build.yml
+  when: not _libbz2_a.stat.exists or force_rebuild
+
+- name: append CFLAGS/LDFLAGS
+  set_fact:
+    ldflags: "{{ ldflags|default([]) + ['-L' + libbz2_install_directory + '/lib'] }}"
+    cflags: "{{ cflags|default([]) + ['-I' + libbz2_install_directory + '/include'] }}"

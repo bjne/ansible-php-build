@@ -1,0 +1,7 @@
+zlib_version: ab50ae8
+zlib_source_directory: "{{ source_directory }}/cloudflare-zlib-{{ zlib_version }}"
+zlib_build_directory: "{{ build_directory }}/cloudflare-zlib-{{ zlib_version }}"
+zlib_install_directory: "{{ install_directory }}/cloudflare-zlib-{{ zlib_version }}"
+
+zlib_configure_flags: >
+  --static

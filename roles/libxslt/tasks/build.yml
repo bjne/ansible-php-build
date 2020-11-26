@@ -1,0 +1,48 @@
+- name: remove old install/build directory
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+  - "{{ libxslt_build_directory }}"
+  - "{{ libxslt_install_directory }}"
+
+- name: create required directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+  - "{{ libxslt_source_directory }}"
+  - "{{ libxslt_build_directory }}"
+  - "{{ libxslt_install_directory }}"
+
+- name: download
+  git:
+    repo: https://github.com/GNOME/libxslt
+    depth: 1
+    version: "{{ libxslt_version }}"
+    dest: "{{ libxslt_source_directory }}"
+
+
+- name: check if we need to run ./autogen.sh
+  stat:
+    path: "{{ libxslt_source_directory }}/configure"
+  register: _libxslt_configure
+
+- name: ./autogen.sh
+  command: "{{ libxslt_source_directory }}/autogen.sh"
+  args:
+    chdir: "{{ libxslt_build_directory }}"
+  when: not _libxslt_configure.stat.exists
+
+- name: configure libxslt
+  command: >
+    {{ libxslt_source_directory }}/configure
+    --prefix={{ libxslt_install_directory }}
+    {{ libxslt_configure_flags }}
+  args:
+    chdir: "{{ libxslt_build_directory }}"
+
+- name: make libxslt
+  command: make -j10 install
+  args:
+    chdir: "{{ libxslt_build_directory }}"

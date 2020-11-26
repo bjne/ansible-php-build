@@ -1,0 +1,8 @@
+libbz2_version: bzip2-1.0.8
+libbz2_source_directory: "{{ source_directory }}/libbz2-{{ libbz2_version }}"
+libbz2_build_directory: "{{ build_directory }}/libbz2-{{ libbz2_version }}"
+libbz2_install_directory: "{{ install_directory }}/libbz2-{{ libbz2_version }}"
+
+libbz2_configure_flags: >
+  --enable-static
+  --disable-shared

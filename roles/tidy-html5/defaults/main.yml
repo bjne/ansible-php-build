@@ -1,0 +1,8 @@
+tidy_html5_version: 5.7.28
+tidy_html5_source_directory: "{{ source_directory }}/tidy_html5-{{ tidy_html5_version }}"
+tidy_html5_build_directory: "{{ build_directory }}/tidy_html5-{{ tidy_html5_version }}"
+tidy_html5_install_directory: "{{ install_directory }}/tidy_html5-{{ tidy_html5_version }}"
+
+tidy_html5_configure_flags: >
+  -DBUILD_SHARED_LIB=OFF
+  -DSUPPORT_CONSOLE_APP=OFF

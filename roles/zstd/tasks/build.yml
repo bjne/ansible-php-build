@@ -1,0 +1,36 @@
+- name: remove old install/build directory
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+  - "{{ zstd_build_directory }}"
+  - "{{ zstd_install_directory }}"
+
+- name: create required directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+  - "{{ zstd_source_directory }}"
+  - "{{ zstd_build_directory }}"
+  - "{{ zstd_install_directory }}"
+
+- name: download
+  git:
+    repo: https://github.com/facebook/zstd
+    depth: 1
+    version: "{{ zstd_version }}"
+    dest: "{{ zstd_source_directory }}"
+
+- name: configure zstd
+  command: >-
+    cmake -DCMAKE_INSTALL_PREFIX={{ zstd_install_directory }}
+    {{ zstd_configure_flags }}
+    {{ zstd_source_directory }}/build/cmake
+  args:
+    chdir: "{{ zstd_build_directory }}"
+
+- name: make zstd
+  command: make -j10 install
+  args:
+    chdir: "{{ zstd_build_directory }}"

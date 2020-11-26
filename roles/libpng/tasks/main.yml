@@ -1,0 +1,12 @@
+- name: check if we need to build
+  stat:
+    path: "{{ libpng_install_directory }}/lib/libpng.a"
+  register: _libpng_a
+
+- include: build.yml
+  when: not _libpng_a.stat.exists or force_rebuild
+
+- name: append to PKG_CONFIG_PATH and PATH
+  set_fact:
+    pkg_config_path: "{{ pkg_config_path|default([]) + [libpng_install_directory + '/lib/pkgconfig'] }}"
+    path: "{{ [libpng_install_directory + '/bin'] + path|default([]) }}"

@@ -1,0 +1,12 @@
+- name: check if we need to build
+  stat:
+    path: "{{ libidn2_install_directory }}/lib/libidn2.a"
+  register: _libidn2_a
+
+- include: build.yml
+  when: not _libidn2_a.stat.exists or force_rebuild
+
+- name: append to PKG_CONFIG_PATH
+  set_fact:
+    pkg_config_path: "{{ pkg_config_path|default([]) + [libidn2_install_directory + '/lib/pkgconfig'] }}"
+    ldflags: "{{ ldflags|default([]) + ['-L' + libidn2_install_directory + '/lib'] }}"

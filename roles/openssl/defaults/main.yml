@@ -1,0 +1,5 @@
+openssl_version: OpenSSL_1_1_1h
+openssl_source_directory: "{{ source_directory }}/{{ openssl_version }}"
+openssl_build_directory: "{{ build_directory }}/{{ openssl_version }}"
+openssl_install_directory: "{{ install_directory }}/{{ openssl_version }}"
+openssl_openssldir: /etc/ssl

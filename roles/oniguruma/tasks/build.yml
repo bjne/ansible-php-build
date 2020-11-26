@@ -1,0 +1,47 @@
+- name: remove old install/build directory
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+  - "{{ oniguruma_build_directory }}"
+  - "{{ oniguruma_install_directory }}"
+
+- name: create required directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+  - "{{ oniguruma_source_directory }}"
+  - "{{ oniguruma_build_directory }}"
+  - "{{ oniguruma_install_directory }}"
+
+- name: download
+  git:
+    repo: https://github.com/kkos/oniguruma
+    depth: 1
+    version: "{{ oniguruma_version }}"
+    dest: "{{ oniguruma_source_directory }}"
+
+- name: check if we need to run autogen
+  stat:
+    path: "{{ oniguruma_source_directory }}/configure"
+  register: _oniguruma_configure
+
+- name: autogen
+  command: ./autogen.sh
+  args:
+    chdir: "{{ oniguruma_source_directory }}"
+  when: not _oniguruma_configure.stat.exists
+
+- name: configure oniguruma
+  command: >
+    {{ oniguruma_source_directory }}/configure
+    --prefix={{ oniguruma_install_directory }}
+    {{ oniguruma_configure_flags }}
+  args:
+    chdir: "{{ oniguruma_build_directory }}"
+
+- name: make oniguruma
+  command: make -j10 install
+  args:
+    chdir: "{{ oniguruma_build_directory }}"

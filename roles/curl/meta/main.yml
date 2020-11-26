@@ -1,0 +1,7 @@
+dependencies:
+  - role: openssl
+  - role: nghttp2
+  - role: libidn2
+  - role: "{{ zlib }}"
+  - role: zstd
+  - role: libbrotli

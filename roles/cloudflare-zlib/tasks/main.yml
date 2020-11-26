@@ -1,0 +1,11 @@
+- name: check if we need to build
+  stat:
+    path: "{{ zlib_install_directory }}/lib/libz.a"
+  register: _zlib_a
+
+- include: build.yml
+  when: not _zlib_a.stat.exists or force_rebuild
+
+- name: append to PKG_CONFIG_PATH
+  set_fact:
+    pkg_config_path: "{{ pkg_config_path|default([]) + [zlib_install_directory + '/lib/pkgconfig'] }}"

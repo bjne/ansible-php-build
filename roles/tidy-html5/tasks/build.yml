@@ -1,0 +1,47 @@
+- name: remove old install/build directory
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+  - "{{ tidy_html5_build_directory }}"
+  - "{{ tidy_html5_install_directory }}"
+
+- name: create required directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+  - "{{ tidy_html5_source_directory }}"
+  - "{{ tidy_html5_build_directory }}"
+  - "{{ tidy_html5_install_directory }}"
+
+- name: download
+  git:
+    repo: https://github.com/htacg/tidy-html5
+    depth: 1
+    version: "{{ tidy_html5_version }}"
+    dest: "{{ tidy_html5_source_directory }}"
+
+- name: check if we need to run autogen
+  stat:
+    path: "{{ tidy_html5_source_directory }}/configure"
+  register: _tidy_html5_configure
+
+- name: configure tidy_html5
+  command: >-
+    cmake
+    -DCMAKE_INSTALL_PREFIX={{ tidy_html5_install_directory }}
+    {{ tidy_html5_configure_flags }}
+    {{ tidy_html5_source_directory }}
+  args:
+    chdir: "{{ tidy_html5_build_directory }}"
+
+- name: make tidy_html5
+  command: make -j10 install
+  args:
+    chdir: "{{ tidy_html5_build_directory }}"
+
+- name: move library from incorrect libtidys.a to libtidy.a
+  command: mv libtidys.a libtidy.a
+  args:
+    chdir: "{{ tidy_html5_install_directory }}/lib"

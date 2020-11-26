@@ -1,0 +1,4 @@
+dependencies:
+  - role: liblzma
+  - role: openssl
+  - role: libxml2

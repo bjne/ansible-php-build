@@ -1,0 +1,12 @@
+- name: check if we need to build
+  stat:
+    path: "{{ nghttp2_install_directory }}/lib/libnghttp2.a"
+  register: _libnghttp2_a
+
+- include: build.yml
+  when: not _libnghttp2_a.stat.exists or force_rebuild
+
+- name: append to PKG_CONFIG_PATH
+  set_fact:
+    pkg_config_path: "{{ pkg_config_path|default([]) + [nghttp2_install_directory + '/lib/pkgconfig'] }}"
+    ldflags: "{{ ldflags|default([]) + ['-L' + nghttp2_install_directory + '/lib'] }}"

@@ -1,0 +1,4 @@
+dependencies:
+  - role: openssl
+  - role: liblzma
+  - role: libbz2

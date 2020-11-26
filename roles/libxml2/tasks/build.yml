@@ -1,0 +1,48 @@
+- name: remove old install/build directory
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+  - "{{ libxml2_build_directory }}"
+  - "{{ libxml2_install_directory }}"
+
+- name: create required directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+  - "{{ libxml2_source_directory }}"
+  - "{{ libxml2_build_directory }}"
+  - "{{ libxml2_install_directory }}"
+
+- name: download
+  git:
+    repo: https://github.com/GNOME/libxml2
+    depth: 1
+    version: "{{ libxml2_version }}"
+    dest: "{{ libxml2_source_directory }}"
+
+
+- name: check if we need to run ./autogen.sh
+  stat:
+    path: "{{ libxml2_source_directory }}/configure"
+  register: _libxml2_configure
+
+- name: ./autogen.sh
+  command: "{{ libxml2_source_directory }}/autogen.sh"
+  args:
+    chdir: "{{ libxml2_build_directory }}"
+  when: not _libxml2_configure.stat.exists
+
+- name: configure libxml2
+  command: >
+    {{ libxml2_source_directory }}/configure
+    --prefix={{ libxml2_install_directory }}
+    {{ libxml2_configure_flags }}
+  args:
+    chdir: "{{ libxml2_build_directory }}"
+
+- name: make libxml2
+  command: make -j10 install
+  args:
+    chdir: "{{ libxml2_build_directory }}"

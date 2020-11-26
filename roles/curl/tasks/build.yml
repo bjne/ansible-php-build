@@ -1,0 +1,47 @@
+- name: remove old install/build directory
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+  - "{{ curl_build_directory }}"
+  - "{{ curl_install_directory }}"
+
+- name: create required directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+  - "{{ curl_source_directory }}"
+  - "{{ curl_build_directory }}"
+  - "{{ curl_install_directory }}"
+
+- name: download curl
+  git:
+    repo: https://github.com/curl/curl
+    depth: 1
+    version: "{{ curl_version }}"
+    dest: "{{ curl_source_directory }}"
+
+- name: check if we need to run autoreconf
+  stat:
+    path: "{{ curl_source_directory }}/configure"
+  register: _curl_configure
+
+- name: autoreconf
+  command: autoreconf -fi
+  args:
+    chdir: "{{ curl_source_directory }}"
+  when: not _curl_configure.stat.exists
+
+- name: configure curl
+  command: >
+    {{ curl_source_directory }}/configure
+    --prefix={{ curl_install_directory }}
+    {{ curl_configure_flags }}
+  args:
+    chdir: "{{ curl_build_directory }}"
+
+- name: make curl
+  command: make -j10 install
+  args:
+    chdir: "{{ curl_build_directory }}"

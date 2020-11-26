@@ -1,0 +1,9 @@
+zstd_version: v1.4.5
+zstd_source_directory: "{{ source_directory }}/zstd-{{ zstd_version }}"
+zstd_build_directory: "{{ build_directory }}/zstd-{{ zstd_version }}"
+zstd_install_directory: "{{ install_directory }}/zstd-{{ zstd_version }}"
+
+zstd_configure_flags: >
+  -DZSTD_BUILD_PROGRAMS=OFF
+  -DZSTD_BUILD_SHARED=OFF
+  -DZSTD_BUILD_STATIC=ON

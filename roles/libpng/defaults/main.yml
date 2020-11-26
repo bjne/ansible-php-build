@@ -1,0 +1,8 @@
+libpng_version: v1.6.37
+libpng_source_directory: "{{ source_directory }}/libpng-{{ libpng_version }}"
+libpng_build_directory: "{{ build_directory }}/libpng-{{ libpng_version }}"
+libpng_install_directory: "{{ install_directory }}/libpng-{{ libpng_version }}"
+
+libpng_configure_flags: >
+  --enable-static
+  --disable-shared

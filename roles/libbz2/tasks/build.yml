@@ -1,0 +1,46 @@
+- name: remove old install/build directory
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+  - "{{ libbz2_build_directory }}"
+  - "{{ libbz2_install_directory }}"
+
+- name: create required directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+  - "{{ libbz2_source_directory }}"
+  - "{{ libbz2_build_directory }}"
+  - "{{ libbz2_install_directory }}/lib"
+  - "{{ libbz2_install_directory }}/include"
+
+- name: download
+  git:
+    repo: git://sourceware.org/git/bzip2.git
+    depth: 1
+    version: "{{ libbz2_version }}"
+    dest: "{{ libbz2_source_directory }}"
+
+- name: clone into build directory
+  git:
+    version: "{{ libbz2_version }}"
+    repo: "{{ libbz2_source_directory }}"
+    dest: "{{ libbz2_build_directory }}"
+
+- name: make libbz2
+  command: make -j10 libbz2.a
+  args:
+    chdir: "{{ libbz2_build_directory }}"
+
+- name: copy header/lib
+  copy:
+    src: "{{ libbz2_build_directory }}/{{ item.src }}"
+    dest: "{{ libbz2_install_directory }}/{{ item.dst }}"
+    remote_src: true
+  with_items:
+  - src: libbz2.a
+    dst: lib/libbz2.a
+  - src: bzlib.h
+    dst: include/bzlib.h

@@ -1,0 +1,8 @@
+libjpeg_turbo_version: 2.0.6
+libjpeg_turbo_source_directory: "{{ source_directory }}/libjpeg-turbo-{{ libjpeg_turbo_version }}"
+libjpeg_turbo_build_directory: "{{ build_directory }}/libjpeg-turbo-{{ libjpeg_turbo_version }}"
+libjpeg_turbo_install_directory: "{{ install_directory }}/libjpeg-turbo-{{ libjpeg_turbo_version }}"
+
+libjpeg_turbo_cmake_options: >
+  -DENABLE_SHARED=OFF
+  -DENABLE_STATIC=ON

@@ -1,0 +1,11 @@
+- name: check if we need to build
+  stat:
+    path: "{{ openssl_install_directory }}/lib/libssl.a"
+  register: _libssl_a
+
+- include: build.yml
+  when: not _libssl_a.stat.exists or force_rebuild
+
+- name: append to PKG_CONFIG_PATH
+  set_fact:
+    pkg_config_path: "{{ pkg_config_path|default([]) + [openssl_install_directory + '/lib/pkgconfig'] }}"

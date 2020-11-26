@@ -1,0 +1,8 @@
+oniguruma_version: v6.9.6
+oniguruma_source_directory: "{{ source_directory }}/oniguruma-{{ oniguruma_version }}"
+oniguruma_build_directory: "{{ build_directory }}/oniguruma-{{ oniguruma_version }}"
+oniguruma_install_directory: "{{ install_directory }}/oniguruma-{{ oniguruma_version }}"
+
+oniguruma_configure_flags: >
+  --enable-static
+  --disable-shared

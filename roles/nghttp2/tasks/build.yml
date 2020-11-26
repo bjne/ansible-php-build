@@ -1,0 +1,52 @@
+- name: remove old install/build directory
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+  - "{{ nghttp2_build_directory }}"
+  - "{{ nghttp2_install_directory }}"
+
+- name: create required directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+  - "{{ nghttp2_source_directory }}"
+  - "{{ nghttp2_build_directory }}"
+  - "{{ nghttp2_install_directory }}"
+
+- name: download
+  git:
+    repo: https://github.com/nghttp2/nghttp2
+    depth: 1
+    version: "{{ nghttp2_version }}"
+    dest: "{{ nghttp2_source_directory }}"
+
+
+- name: check if we need to run autoreconf
+  stat:
+    path: "{{ nghttp2_source_directory }}/configure"
+  register: _nghttp2_configure
+
+- name: autoreconf
+  command: "{{ item }}"
+  args:
+    chdir: "{{ nghttp2_source_directory }}"
+  when: not _nghttp2_configure.stat.exists
+  with_items:
+  - autoreconf -fi
+  - automake
+  - autoconf
+
+- name: configure nghttp2
+  command: >
+    {{ nghttp2_source_directory }}/configure
+    --prefix={{ nghttp2_install_directory }}
+    {{ nghttp2_configure_flags }}
+  args:
+    chdir: "{{ nghttp2_build_directory }}"
+
+- name: make nghttp2
+  command: make -j10 install
+  args:
+    chdir: "{{ nghttp2_build_directory }}"

@@ -1,0 +1,12 @@
+- name: check if we need to build
+  stat:
+    path: "{{ oniguruma_install_directory }}/lib/libonig.a"
+  register: _libonig_a
+
+- include: build.yml
+  when: not _libonig_a.stat.exists or force_rebuild
+
+- name: append to PKG_CONFIG_PATH and PATH
+  set_fact:
+    pkg_config_path: "{{ pkg_config_path|default([]) + [oniguruma_install_directory + '/lib/pkgconfig'] }}"
+    cflags: "{{ cflags|default([]) + ['-I' + oniguruma_install_directory + '/include'] }}"

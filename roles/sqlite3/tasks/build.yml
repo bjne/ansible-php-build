@@ -1,0 +1,44 @@
+- name: install stupid tclsh dependency
+  apt:
+    pkg: tcl
+    state: present
+
+- name: remove old install/build directory
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+  - "{{ sqlite3_build_directory }}"
+  - "{{ sqlite3_install_directory }}"
+
+- name: create required directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+  - "{{ sqlite3_source_directory }}"
+  - "{{ sqlite3_build_directory }}"
+  - "{{ sqlite3_install_directory }}"
+
+- name: download
+  git:
+    repo: https://github.com/sqlite/sqlite
+    depth: 1
+    version: "{{ sqlite3_version }}"
+    dest: "{{ sqlite3_source_directory }}"
+
+- name: configure sqlite3
+  command: >
+    {{ sqlite3_source_directory }}/configure
+    --prefix={{ sqlite3_install_directory }}
+    {{ sqlite3_configure_flags }}
+  args:
+    chdir: "{{ sqlite3_build_directory }}"
+
+- name: make sqlite3
+  command: >-
+    make
+    OPTS="-DSQLITE_ENABLE_COLUMN_METADATA=1"
+    -j10 install
+  args:
+    chdir: "{{ sqlite3_build_directory }}"

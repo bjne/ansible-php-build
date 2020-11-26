@@ -1,0 +1,40 @@
+- name: remove old install/build directory
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+  - "{{ openssl_build_directory }}"
+  - "{{ openssl_install_directory }}"
+
+- name: create required directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+  - "{{ openssl_source_directory }}"
+  - "{{ openssl_build_directory }}"
+  - "{{ openssl_install_directory }}"
+
+- name: download
+  git:
+    repo: https://github.com/openssl/openssl
+    depth: 1
+    version: "{{ openssl_version }}"
+    dest: "{{ openssl_source_directory }}"
+
+- name: configure
+  command: >
+    {{ openssl_source_directory }}/config
+    no-shared
+    zlib
+    --prefix={{ openssl_install_directory }}
+    --openssldir={{ openssl_openssldir }}
+  args:
+    chdir: "{{ openssl_build_directory }}"
+
+# no-threads
+
+- name: make
+  command: make -j10 install_dev
+  args:
+    chdir: "{{ openssl_build_directory }}"

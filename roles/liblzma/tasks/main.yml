@@ -1,0 +1,11 @@
+- name: check if we need to build
+  stat:
+    path: "{{ liblzma_install_directory }}/lib/liblzma.a"
+  register: _liblzma_a
+
+- include: build.yml
+  when: not _liblzma_a.stat.exists or force_rebuild
+
+- name: append to PKG_CONFIG_PATH and PATH
+  set_fact:
+    pkg_config_path: "{{ pkg_config_path|default([]) + [liblzma_install_directory + '/lib/pkgconfig'] }}"

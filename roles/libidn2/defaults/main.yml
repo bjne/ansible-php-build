@@ -1,0 +1,9 @@
+libidn2_version: 2.3.0
+libidn2_source_directory: "{{ source_directory }}/libidn2-{{ libidn2_version }}"
+libidn2_build_directory: "{{ build_directory }}/libidn2-{{ libidn2_version }}"
+libidn2_install_directory: "{{ install_directory }}/libidn2-{{ libidn2_version }}"
+
+libidn2_configure_flags: >
+  --enable-static
+  --disable-shared
+  --disable-doc

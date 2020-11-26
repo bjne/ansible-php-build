@@ -1,0 +1,8 @@
+libbrotli_version: a90f3a4
+libbrotli_source_directory: "{{ source_directory }}/libbrotli-{{ libbrotli_version }}"
+libbrotli_build_directory: "{{ build_directory }}/libbrotli-{{ libbrotli_version }}"
+libbrotli_install_directory: "{{ install_directory }}/libbrotli-{{ libbrotli_version }}"
+
+libbrotli_configure_flags: >
+  --enable-static
+  --disable-shared

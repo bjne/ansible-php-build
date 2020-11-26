@@ -1,0 +1,43 @@
+php_version: php-8.0.0RC5
+php_source_directory: "{{ source_directory }}/{{ php_version }}"
+php_build_directory: "{{ build_directory }}/{{ php_version }}"
+php_install_directory: "{{ install_directory }}/{{ php_version }}"
+php_configure_flags: >
+  --disable-rpath
+  --enable-intl=static
+  --with-layout=GNU
+  --enable-re2c-cgoto
+  --enable-embed=static
+  --disable-cgi
+  --without-valgrind
+  --disable-phpdbg
+  --with-curl
+  --with-openssl
+  --enable-gd
+  --with-webp
+  --with-jpeg
+  --with-freetype
+  --with-mysqli=mysqlnd
+  --with-pdo-mysql=mysqlnd
+  --disable-phar
+  --disable-posix
+  --disable-zend-signals
+  --enable-sockets
+  --enable-exif
+  --with-zlib
+  --with-bz2
+  --with-zip
+  --enable-xmlreader
+  --with-xsl
+  --enable-ftp
+  --with-tidy={{ tidy_html5_install_directory }}
+  --with-xmlrpc
+  --enable-sysvsem
+  --enable-sysvshm
+  --enable-shmop
+  --enable-pcntl
+  --enable-mbstring
+  --disable-debug
+  --enable-bcmath
+  --with-opcache=static
+  --enable-intl=static

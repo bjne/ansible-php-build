@@ -1,0 +1,13 @@
+libxml2_version: v2.9.10
+libxml2_source_directory: "{{ source_directory }}/libxml2-{{ libxml2_version }}"
+libxml2_build_directory: "{{ build_directory }}/libxml2-{{ libxml2_version }}"
+libxml2_install_directory: "{{ install_directory }}/libxml2-{{ libxml2_version }}"
+
+libxml2_configure_flags: >
+  --enable-static
+  --disable-shared
+  --without-python
+  --without-modules
+  --without-debug
+  --without-legacy
+  --with-reader

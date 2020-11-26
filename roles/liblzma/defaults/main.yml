@@ -1,0 +1,16 @@
+liblzma_version: v5.2.5
+liblzma_source_directory: "{{ source_directory }}/liblzma-{{ liblzma_version }}"
+liblzma_build_directory: "{{ build_directory }}/liblzma-{{ liblzma_version }}"
+liblzma_install_directory: "{{ install_directory }}/liblzma-{{ liblzma_version }}"
+
+liblzma_configure_flags: >
+  --enable-static
+  --disable-shared
+  --disable-xz
+  --disable-xzdec
+  --disable-lzmadec
+  --disable-lzmainfo
+  --disable-lzma-links
+  --disable-scripts
+  --disable-doc
+  --disable-nls

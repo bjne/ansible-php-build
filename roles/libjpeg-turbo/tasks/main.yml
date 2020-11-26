@@ -1,0 +1,11 @@
+- name: check if we need to build
+  stat:
+    path: "{{ libjpeg_turbo_install_directory }}/lib/libjpeg.a"
+  register: _libjpeg_turbo_a
+
+- include: build.yml
+  when: not _libjpeg_turbo_a.stat.exists or force_rebuild
+
+- name: append to PKG_CONFIG_PATH
+  set_fact:
+    pkg_config_path: "{{ pkg_config_path|default([]) + [libjpeg_turbo_install_directory + '/lib/pkgconfig'] }}"

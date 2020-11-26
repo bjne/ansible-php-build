@@ -1,0 +1,42 @@
+- name: install dependencies
+  apt:
+    pkg: cmake
+    state: present
+
+- name: remove old install/build directory
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+  - "{{ libjpeg_turbo_build_directory }}"
+  - "{{ libjpeg_turbo_install_directory }}"
+
+- name: create required directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+  - "{{ libjpeg_turbo_source_directory }}"
+  - "{{ libjpeg_turbo_build_directory }}"
+  - "{{ libjpeg_turbo_install_directory }}"
+
+- name: download
+  git:
+    repo: https://github.com/libjpeg-turbo/libjpeg-turbo
+    depth: 1
+    version: "{{ libjpeg_turbo_version }}"
+    dest: "{{ libjpeg_turbo_source_directory }}"
+
+- name: configure
+  command: >
+    cmake -G"Unix Makefiles"
+    -DCMAKE_INSTALL_PREFIX={{ libjpeg_turbo_install_directory }}
+    {{ libjpeg_turbo_cmake_options }}
+    {{ libjpeg_turbo_source_directory }}
+  args:
+    chdir: "{{ libjpeg_turbo_build_directory }}"
+
+- name: make libjpeg_turbo
+  command: make -j10 install
+  args:
+    chdir: "{{ libjpeg_turbo_build_directory }}"

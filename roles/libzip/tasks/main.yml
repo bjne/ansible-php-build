@@ -1,0 +1,11 @@
+- name: check if we need to build
+  stat:
+    path: "{{ libzip_install_directory }}/lib/libzip.a"
+  register: _libzip_a
+
+- include: build.yml
+  when: not _libzip_a.stat.exists or force_rebuild
+
+- name: append to PKG_CONFIG_PATH and PATH
+  set_fact:
+    pkg_config_path: "{{ pkg_config_path|default([]) + [libzip_install_directory + '/lib/pkgconfig'] }}"

@@ -1,0 +1,11 @@
+- name: check if we need to build
+  stat:
+    path: "{{ libwebp_install_directory }}/lib/libwebp.a"
+  register: _libwebp_a
+
+- include: build.yml
+  when: not _libwebp_a.stat.exists or force_rebuild
+
+- name: append to PKG_CONFIG_PATH
+  set_fact:
+    pkg_config_path: "{{ pkg_config_path|default([]) + [libwebp_install_directory + '/lib/pkgconfig'] }}"
