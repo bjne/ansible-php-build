@@ -19,8 +19,15 @@
   git:
     repo: https://github.com/php/php-src
     depth: 1
+    force: yes
     version: "{{ php_version }}"
     dest: "{{ php_source_directory }}"
+
+- name: apply patch against MessageFormatAdapter::getArgTypeList redefinition
+  patch:
+    src: php-remove-messageformatadapter-getargtypelist.patch
+    basedir: "{{ php_source_directory }}"
+    strip: 1
 
 - name: check if we need to run autoreconf
   stat:

@@ -1,0 +1,17 @@
+diff --git a/ext/intl/msgformat/msgformat_helpers.cpp b/ext/intl/msgformat/msgformat_helpers.cpp
+index 55d3bdd7..295a7205 100644
+--- a/ext/intl/msgformat/msgformat_helpers.cpp
++++ b/ext/intl/msgformat/msgformat_helpers.cpp
+@@ -54,12 +54,6 @@ public:
+     static const MessagePattern getMessagePattern(MessageFormat* m);
+ };
+ 
+-const Formattable::Type*
+-MessageFormatAdapter::getArgTypeList(const MessageFormat& m,
+-                                     int32_t& count) {
+-    return m.getArgTypeList(count);
+-}
+-
+ const MessagePattern
+ MessageFormatAdapter::getMessagePattern(MessageFormat* m) {
+     return m->msgPattern;

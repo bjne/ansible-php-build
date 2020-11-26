@@ -1,4 +1,4 @@
-php_version: php-8.0.0RC5
+php_version: php-8.0.0
 php_source_directory: "{{ source_directory }}/{{ php_version }}"
 php_build_directory: "{{ build_directory }}/{{ php_version }}"
 php_install_directory: "{{ install_directory }}/{{ php_version }}"
