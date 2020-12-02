@@ -49,6 +49,14 @@
   with_items:
   - lib/idna-tables-properties.csv
 
+- name: copy idn2.h to source directory...
+  copy:
+    src: "{{ libidn2_build_directory }}/{{ item }}"
+    dest: "{{ libidn2_source_directory }}/{{ item }}"
+    remote_src: true
+  with_items:
+  - lib/idn2.h
+
 
 - name: make libidn2
   command: make -j10 install
